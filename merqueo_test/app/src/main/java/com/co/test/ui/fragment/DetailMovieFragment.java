@@ -29,12 +29,6 @@ public class DetailMovieFragment extends BaseFragment implements ViewMovies {
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbar;
 
-    @BindView(R.id.app_bar_layout)
-    AppBarLayout appBarLayout;
-
-    @BindView(R.id.title_movie_detail)
-    RobotoTextView titleMovieDetail;
-
     @BindView(R.id.description_movie_detail)
     RobotoTextView descriptionMovieDetail;
 
@@ -44,7 +38,6 @@ public class DetailMovieFragment extends BaseFragment implements ViewMovies {
     @BindView(R.id.poster_movie)
     ImageView posterMovie;
 
-    private static final String EXTRA_IMAGE = "com.co.test.extraImage";
     public static final String EXTRA_ID = "com.co.test.extraid";
 
     @Override
@@ -55,12 +48,13 @@ public class DetailMovieFragment extends BaseFragment implements ViewMovies {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ViewCompat.setTransitionName(appBarLayout, EXTRA_IMAGE);
 
         getActivity().supportPostponeEnterTransition();
 
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-        collapsingToolbar.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
+        collapsingToolbar.setCollapsedTitleTextAppearance(R.style.collapsedappbar);
+        collapsingToolbar.setExpandedTitleTextAppearance(R.style.expandedappbar);
+
 
         presenter = new MoviePresenterImpl(this);
         presenter.getMovieDetail(getArguments().getString(EXTRA_ID));
@@ -74,12 +68,13 @@ public class DetailMovieFragment extends BaseFragment implements ViewMovies {
         Result result = ((Result) response);
         Glide.with(this)
                 .load("https://image.tmdb.org/t/p/w500"+ result.getPosterPath())
-                .apply(bitmapTransform(new BlurTransformation(25)))
+                .apply(bitmapTransform(new BlurTransformation(30)))
                 .into(posterMovie);
 
-        titleMovieDetail.setText(result.getTitle());
         descriptionMovieDetail.setText(result.getOverview());
         votesMovieDetail.setText(String.valueOf(result.getVoteAverage()));
+        toolbar.setTitle(result.getTitle());
+
     }
 
     @Override
